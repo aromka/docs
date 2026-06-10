@@ -1,0 +1,78 @@
+---
+title: "CrowdChange Donations: Types, Statuses, and Matching"
+sidebarTitle: "Donations"
+description: "Understand how one-time, recurring, offline, and matched donations are processed, tracked, and reported across every campaign in CrowdChange."
+---
+
+Every gift a donor makes through CrowdChange — whether submitted online, recorded offline, or matched by a corporate partner — is represented as a donation record attached to a specific campaign. Donations flow from the donor-facing checkout form through payment processing and into your real-time dashboard, where they appear immediately with full donor detail, status, and attribution. You can view, filter, export, and act on donation records at any time from the campaign or organization level.
+
+## Donation Types
+
+CrowdChange supports four donation types. You choose which types to enable when you configure each campaign.
+
+<CardGroup cols={2}>
+  <Card title="One-Time" icon="circle-dollar-to-slot">
+    A single payment processed immediately at checkout. The donor's card is charged once and the transaction is complete. One-time gifts are the default type available on every campaign.
+  </Card>
+  <Card title="Monthly Recurring" icon="arrows-rotate">
+    The donor's payment method is charged on the same day each month until they cancel. CrowdChange manages the recurring billing schedule automatically and sends the donor a receipt for each charge.
+  </Card>
+  <Card title="Annual Recurring" icon="calendar">
+    Similar to monthly recurring, but the donor is charged once per year on the anniversary of their original gift. Annual recurring gifts are well-suited for membership programs and sustainer campaigns.
+  </Card>
+  <Card title="Offline / Pledge" icon="envelope-open-text">
+    An offline donation is recorded manually by your team — for example, a cash gift received at an event or a pledge made over the phone. CrowdChange stores the donor's information and can automatically send the donor a fulfillment link by email so they can complete their pledge online at their convenience.
+  </Card>
+</CardGroup>
+
+## Donation Fields
+
+Each donation record captures the following information:
+
+| Field | Description |
+|---|---|
+| **Amount** | The gift amount in your campaign's currency. |
+| **Donor Name** | First and last name as entered at checkout. |
+| **Email Address** | Used for receipts, recurring billing notifications, and pledge fulfillment links. |
+| **Dedication / Tribute Message** | An optional personal message the donor writes when giving in honor or memory of someone. |
+| **Anonymous** | When selected, the donor's name is hidden from public campaign displays and leaderboards, though it remains visible in your admin dashboard. |
+| **Donation Type** | One-time, monthly, annual, or offline/pledge. |
+| **Campaign** | The campaign the donation is attributed to. |
+| **Fundraiser** | If the gift was made through a peer-to-peer fundraiser's personal page, the fundraiser is recorded for attribution and leaderboard purposes. |
+
+## Donation Statuses
+
+As a donation moves through the payment lifecycle, its status is updated in real time.
+
+| Status | Meaning |
+|---|---|
+| **Pending** | The donation has been submitted but payment has not yet been confirmed. Common for ACH / bank transfer gifts during the settlement window. |
+| **Completed** | Payment was successfully processed and funds are on their way to your account. A receipt has been sent to the donor. |
+| **Failed** | The payment attempt was declined or encountered an error. The donor is notified and can retry with a different payment method. |
+| **Refunded** | The donation has been reversed, either by your team from the dashboard or as a result of a chargeback. Refunded donations are excluded from campaign totals. |
+
+## Matching Donations
+
+CrowdChange has a built-in donation matching engine that lets you configure a matching program directly within a campaign. You define a matching pool (the total funds available for matching) and a multiplier — for example, a 1:1 match doubles every dollar donated, while a 2:1 match triples it.
+
+When a donor gives to a matching-enabled campaign, a corresponding matched donation is automatically created and displayed alongside the original gift in your dashboard and on the campaign page. The matching pool balance decreases in real time as matches are applied, and donors can see exactly how much matching funds remain before they give — a powerful motivator to encourage larger gifts.
+
+Matched donations appear as distinct records in your reports with a **Matched** type label, making it straightforward to reconcile the corporate match against actual donor contributions at the end of your campaign.
+
+<Tip>
+  Tax receipts are handled automatically by CrowdChange. Every completed donation triggers a receipt email to the donor immediately after checkout, including the organization name, gift amount, date, and a statement confirming no goods or services were received in exchange (unless you have configured ticket or eCard purchases on the same transaction). You do not need to send receipts manually.
+</Tip>
+
+## Donation Types at a Glance
+
+| Type | Trigger | Recurring | Requires Payment at Checkout | Fulfillment Link Sent |
+|---|---|---|---|---|
+| One-Time | Immediate | No | Yes | No |
+| Monthly Recurring | Monthly anniversary | Yes | Yes | No |
+| Annual Recurring | Yearly anniversary | Yes | Yes | No |
+| Offline / Pledge | Manual entry | No | No | Optional |
+
+## Next Steps
+
+- [Configure pledging and offline donation tracking](/features/pledging)
+- [Set up donation matching with custom multipliers](/features/donation-matching)

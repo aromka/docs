@@ -1,0 +1,103 @@
+---
+title: "CrowdChange Campaigns: Types, Lifecycle, and Templates"
+sidebarTitle: "Campaigns"
+description: "Explore campaign lifecycle stages, campaign types, and blueprinting templates to manage every fundraising initiative across your organization."
+---
+
+A campaign is the central organizing unit of every fundraising effort in CrowdChange. Whether you are running a one-day giving event, a year-round tribute fund, or a multi-location peer-to-peer drive, every donation, ticket sale, and fundraiser page lives inside a campaign. You configure the campaign's goal, timeline, branding, and accepted donation types, and CrowdChange handles the rest — from the donor-facing page to real-time reporting.
+
+## Campaign Lifecycle
+
+Every campaign moves through a predictable set of stages from the moment you create it to the moment you close it out.
+
+<Steps>
+  <Step title="Draft">
+    The campaign exists in your dashboard but is not publicly accessible. Use this stage to configure your goal, branding, donation types, and page content. You can preview the donor-facing page at any time before publishing.
+  </Step>
+  <Step title="Active">
+    The campaign is live and accepting donations, ticket purchases, and fundraiser registrations. Your shareable URL and auto-generated QR code are live. Real-time analytics begin tracking all activity from the first donation.
+  </Step>
+  <Step title="Completed">
+    The campaign end date has passed, or you have manually closed it. No new donations are accepted. Donors can still view the final campaign page, and you can continue running reports against completed campaign data.
+  </Step>
+  <Step title="Archived">
+    The campaign is removed from your active dashboard view but remains fully accessible for reporting and auditing. Archived campaigns can be unarchived at any time.
+  </Step>
+</Steps>
+
+## Campaign Types
+
+CrowdChange supports four distinct campaign types. Each type shares the same core configuration options but unlocks a different set of features tailored to that fundraising model.
+
+<Tabs>
+  <Tab title="Standard">
+    A **Standard Campaign** is a goal-based, time-limited fundraising page. You set a monetary goal and a start and end date, and donors give directly to your organization. Standard campaigns are ideal for annual fund drives, emergency appeals, and seasonal giving programs.
+
+    Key features:
+    - One-time, monthly, and annual recurring donation options
+    - Configurable suggested donation amounts
+    - Embeddable donation form for your own website
+    - Donation matching with configurable multipliers
+  </Tab>
+  <Tab title="Peer-to-Peer">
+    A **Peer-to-Peer Campaign** lets your supporters become fundraisers by creating personal fundraising pages that roll up into your main campaign total. Each fundraiser sets their own goal and shares their personal page link with friends and family.
+
+    Key features:
+    - Supporter self-registration and page creation
+    - Team fundraising with combined leaderboards
+    - Admin coaching tools and progress notifications
+    - Social sharing and personal QR codes for every fundraiser page
+
+    See [Peer-to-Peer Fundraising](/features/peer-to-peer) for full setup details.
+  </Tab>
+  <Tab title="Event">
+    An **Event Campaign** combines fundraising with ticketed event registration. You define ticket tiers, capacities, and prices, and attendees register and pay in a single checkout flow. QR code ticket verification is built in.
+
+    Key features:
+    - Multiple ticket tiers (general admission, VIP, staff, etc.)
+    - QR code generation and mobile scanning for check-in
+    - Optional donation ask at checkout
+    - Registration data export for event logistics
+  </Tab>
+  <Tab title="Tribute / Memorial">
+    A **Tribute or Memorial Campaign** enables donors to give in honor or memory of an individual. The campaign can feature an eCard store and a tribute fund where donors dedicate their gifts and send personalized eCards.
+
+    Key features:
+    - Tribute card designer with customizable templates
+    - eCard store with email delivery
+    - Dedication messages stored with each donation record
+    - Optional anonymous giving
+  </Tab>
+</Tabs>
+
+## Key Campaign Fields
+
+When you create or edit a campaign, you will configure the following fields:
+
+| Field | Description |
+|---|---|
+| **Name** | The public-facing title of your campaign. Appears on the donor page, receipts, and reports. |
+| **Goal Amount** | The fundraising target displayed on the campaign progress thermometer. |
+| **Start Date** | The date and time the campaign goes live (in your organization's timezone). |
+| **End Date** | The date and time the campaign stops accepting donations. |
+| **Donation Types** | Choose any combination of one-time, monthly recurring, and annual recurring gifts. |
+| **Logo** | Your organization or campaign logo, displayed at the top of the donor page. |
+| **Brand Colors** | Primary and accent colors applied to buttons, progress bars, and campaign accents. |
+| **Page URL** | A customizable slug appended to your organization's CrowdChange subdomain (e.g., `yourorg.crowdchange.co/campaign-slug`). |
+
+## Blueprinting and Master Templates
+
+If your organization operates across multiple chapters, parishes, schools, or locations, CrowdChange's **blueprinting** feature lets you create a single master campaign template and spin up hundreds of location-specific campaigns in minutes.
+
+You configure the master template once — setting the campaign type, donation tiers, branding guidelines, and page structure — and then upload a CSV file containing each location's name, goal, and contact details. CrowdChange generates a fully configured campaign for every row in your spreadsheet.
+
+After launch, any structural change you make to the master template can be pushed globally to all child campaigns at once, ensuring consistent messaging and branding across your entire network while still allowing each location to personalize their own story and goal.
+
+<Note>
+  Every campaign gets an auto-generated, print-ready QR code the moment it is published. The QR code links directly to your campaign's shareable URL and can be downloaded from the campaign dashboard for use on flyers, emails, and event signage.
+</Note>
+
+## Next Steps
+
+- [Set up an embeddable donation form](/features/donation-forms) for your website or email
+- [Configure a peer-to-peer campaign](/features/peer-to-peer) and invite your first fundraisers

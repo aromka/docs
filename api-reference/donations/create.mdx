@@ -1,0 +1,122 @@
+---
+title: "POST /donations — Record an Offline Donation or Pledge"
+sidebarTitle: "Record Donation"
+description: "Record an offline donation or pledge against a campaign. Use this for cash, cheque, or in-kind gifts collected outside the CrowdChange donation form."
+---
+
+Use this endpoint to record a donation or pledge that was collected outside of CrowdChange — for example, a cash gift received at an event, a cheque sent by mail, or a pledge commitment from a major donor. This endpoint adds the recorded amount to your campaign's `raised_amount` tally and creates an auditable donation record. It is **not** intended for processing online payments; donors making credit card gifts should use your campaign's hosted donation form or a fulfillment link.
+
+## Endpoint
+
+```
+POST https://api.crowdchange.co/v1/donations
+```
+
+## Request Body
+
+<ParamField body="campaign_id" type="string" required>
+  The ID of the campaign to record this donation against (e.g. `camp_abc123`).
+</ParamField>
+
+<ParamField body="amount" type="integer" required>
+  The donation amount in cents. For example, pass `25000` to record a $250.00 gift.
+</ParamField>
+
+<ParamField body="currency" type="string">
+  The ISO 4217 currency code for this donation. Defaults to `CAD`. Accepted values include `CAD` and `USD`.
+</ParamField>
+
+<ParamField body="type" type="string" required>
+  The donation type. Must be one of: `pledge`, `one_time`. Use `pledge` for commitment-based gifts that have not yet been paid; use `one_time` for gifts that have already been received.
+</ParamField>
+
+<ParamField body="donor" type="object" required>
+  An object containing the donor's information.
+
+  <Expandable title="Donor fields">
+    <ParamField body="donor.name" type="string" required>
+      The donor's full name.
+    </ParamField>
+
+    <ParamField body="donor.email" type="string" required>
+      The donor's email address. Used for tax receipting and acknowledgement communications.
+    </ParamField>
+
+    <ParamField body="donor.anonymous" type="boolean">
+      Set to `true` to hide the donor's name from public-facing campaign displays. Their details will still be visible to organization administrators. Defaults to `false`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="tribute" type="object">
+  Optional. Include this object to designate the donation as a tribute gift.
+
+  <Expandable title="Tribute fields">
+    <ParamField body="tribute.type" type="string" required>
+      The type of tribute. Must be either `in_memory_of` or `in_honour_of`.
+    </ParamField>
+
+    <ParamField body="tribute.name" type="string" required>
+      The name of the person being honoured or remembered.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Example Request
+
+The following example records a $500.00 pledge made in memory of a loved one:
+
+```bash
+curl -X POST https://api.crowdchange.co/v1/donations \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "campaign_id": "camp_abc123",
+    "amount": 50000,
+    "currency": "CAD",
+    "type": "pledge",
+    "donor": {
+      "name": "Robert Chen",
+      "email": "robert.chen@example.com",
+      "anonymous": false
+    },
+    "tribute": {
+      "type": "in_memory_of",
+      "name": "Margaret Chen"
+    }
+  }'
+```
+
+## Example Response
+
+A successful request returns HTTP `201 Created` with the newly created donation record.
+
+```json
+{
+  "data": {
+    "id": "don_mno345",
+    "campaign_id": "camp_abc123",
+    "fundraiser_id": null,
+    "amount": 50000,
+    "currency": "CAD",
+    "type": "pledge",
+    "status": "pending",
+    "donor": {
+      "name": "Robert Chen",
+      "email": "robert.chen@example.com",
+      "anonymous": false
+    },
+    "tribute": {
+      "type": "in_memory_of",
+      "name": "Margaret Chen"
+    },
+    "matched": false,
+    "matched_amount": null,
+    "created_at": "2024-03-12T16:00:00Z"
+  }
+}
+```
+
+<Note>
+  This endpoint records a donation for reporting and tracking purposes only — it does **not** charge the donor's payment method. To collect payment for a pledge or offline gift, send the donor a fulfillment link from your CrowdChange dashboard, or direct them to your campaign's hosted donation form.
+</Note>

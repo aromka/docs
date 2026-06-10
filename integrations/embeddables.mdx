@@ -1,0 +1,89 @@
+---
+title: "Embed Donation Forms Directly on Your Nonprofit Website"
+sidebarTitle: "Embeddables"
+description: "Generate embed code for your CrowdChange donation forms and place them on any website — no developer required, no code changes needed."
+---
+
+CrowdChange's embeddable donation forms let you keep donors on your own website while still powering the entire giving experience through CrowdChange. Instead of redirecting supporters to a separate page, you can drop a fully functional, branded donation form directly into your site — maintaining trust, reducing drop-off, and making it easy for visitors to give without ever leaving your content.
+
+## Getting Your Embed Code
+
+<Steps>
+  <Step title="Open your campaign's Donation Form">
+    From your CrowdChange dashboard, navigate to your campaign and select the **Donation Form** tab.
+  </Step>
+  <Step title="Click Embed in the top right">
+    Look for the **Embed** button in the upper-right corner of the Donation Form editor.
+  </Step>
+  <Step title="Choose your embed type">
+    Select either **Inline** (renders the form directly in your page) or **Popup** (adds a floating donate button that opens the form in a modal).
+  </Step>
+  <Step title="Copy the generated code snippet">
+    CrowdChange generates a ready-to-use code snippet. Click **Copy** to copy it to your clipboard.
+  </Step>
+  <Step title="Paste it into your website's HTML">
+    Open your website editor or CMS, find the location where you want the form to appear, and paste the snippet into the HTML source.
+  </Step>
+</Steps>
+
+## Embed Types
+
+CrowdChange offers two embed formats so you can choose what fits your site's layout best.
+
+**Inline embed** renders the full donation form inside an `<iframe>` directly within your page layout. This is the best choice for a dedicated "Donate" page where the form is the main focus.
+
+**Popup embed** adds a floating donate button anywhere on your page. When a visitor clicks it, the donation form opens in a modal overlay. This works well in sidebars, sticky headers, or anywhere you want a persistent call-to-action without taking up layout space.
+
+### Inline Embed Code
+
+```html
+<!-- CrowdChange Inline Donation Form -->
+<iframe
+  src="https://give.crowdchange.co/embed/YOUR_CAMPAIGN_ID"
+  width="100%"
+  height="600"
+  frameborder="0"
+  scrolling="no"
+  allowtransparency="true">
+</iframe>
+```
+
+### Popup Embed Code
+
+```html
+<!-- CrowdChange Popup Donation Button -->
+<script
+  src="https://give.crowdchange.co/embed.js"
+  data-campaign="YOUR_CAMPAIGN_ID"
+  data-button-label="Donate Now"
+  data-button-color="#2563EB">
+</script>
+```
+
+## Customization Options
+
+You can adjust the following attributes directly in the embed code to match your site's branding:
+
+<CardGroup cols={3}>
+  <Card title="Button Label" icon="tag">
+    Change the `data-button-label` attribute to any call-to-action text, such as `"Give Today"` or `"Support Us"`.
+  </Card>
+  <Card title="Button Color" icon="palette">
+    Set `data-button-color` to any hex color code to match your organization's brand palette.
+  </Card>
+  <Card title="Form Height" icon="arrow-up-down">
+    Adjust the `height` attribute on the `<iframe>` to control how tall the inline form appears on your page.
+  </Card>
+</CardGroup>
+
+## Live Updates
+
+One of the biggest advantages of CrowdChange embeds is that they stay in sync automatically. If you update your donation form in CrowdChange — changing the suggested amounts, adding a cover fees option, or updating the branding — those changes are reflected in your embedded form instantly. You do not need to update or re-paste the embed code on your website.
+
+<Note>
+  The embed code is unique to each campaign. If you create a new campaign, you will need to generate and paste a new embed code for that campaign. The old embed will continue to point to the original campaign.
+</Note>
+
+<Tip>
+  Before adding the embed to your live website, test it in a staging or development environment first. This lets you confirm the form loads correctly, fits your layout, and that donations flow through to your CrowdChange dashboard as expected.
+</Tip>

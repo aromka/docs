@@ -1,0 +1,188 @@
+---
+title: "GET /donations — List All Donation Records for Your Org"
+sidebarTitle: "List Donations"
+description: "Retrieve a paginated list of donations across your organization. Filter by campaign, status, type, or date range for targeted reporting."
+---
+
+Use this endpoint to retrieve donations across your organization, with optional filters to narrow results by campaign, status, donation type, or date range. Results are returned in reverse chronological order (newest first) and support cursor-based pagination. This endpoint is particularly useful for building reports, syncing donation records with your CRM, or monitoring fundraising activity in real time.
+
+## Endpoint
+
+```
+GET https://api.crowdchange.co/v1/donations
+```
+
+## Query Parameters
+
+<ParamField query="limit" type="integer">
+  The number of donations to return per page. Defaults to `20`. Maximum value is `100`.
+</ParamField>
+
+<ParamField query="cursor" type="string">
+  A pagination cursor returned as `next_cursor` in a previous response. Pass this value to retrieve the next page of results.
+</ParamField>
+
+<ParamField query="campaign_id" type="string">
+  Filter donations to those belonging to a specific campaign (e.g. `camp_abc123`).
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter donations by their current processing status. One of: `pending`, `completed`, `failed`, `refunded`.
+</ParamField>
+
+<ParamField query="type" type="string">
+  Filter donations by their frequency type. One of: `one_time`, `monthly`, `annual`, `pledge`.
+</ParamField>
+
+<ParamField query="date_from" type="string">
+  Return only donations created on or after this date and time, in ISO 8601 format (e.g. `2024-01-01T00:00:00Z`).
+</ParamField>
+
+<ParamField query="date_to" type="string">
+  Return only donations created on or before this date and time, in ISO 8601 format (e.g. `2024-03-31T23:59:59Z`).
+</ParamField>
+
+## Example Request
+
+```bash
+curl "https://api.crowdchange.co/v1/donations?campaign_id=camp_abc123&status=completed&limit=20" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "don_abc123",
+      "campaign_id": "camp_abc123",
+      "fundraiser_id": "fnd_def456",
+      "amount": 10000,
+      "currency": "CAD",
+      "type": "one_time",
+      "status": "completed",
+      "donor": {
+        "name": "Jane Smith",
+        "email": "jane.smith@example.com",
+        "anonymous": false
+      },
+      "tribute": {
+        "type": "in_memory_of",
+        "name": "John Smith"
+      },
+      "matched": true,
+      "matched_amount": 10000,
+      "created_at": "2024-03-10T14:35:00Z"
+    },
+    {
+      "id": "don_ghi789",
+      "campaign_id": "camp_abc123",
+      "fundraiser_id": null,
+      "amount": 2500,
+      "currency": "CAD",
+      "type": "monthly",
+      "status": "completed",
+      "donor": {
+        "name": "Anonymous",
+        "email": "donor@example.com",
+        "anonymous": true
+      },
+      "tribute": null,
+      "matched": false,
+      "matched_amount": null,
+      "created_at": "2024-03-09T09:10:00Z"
+    }
+  ],
+  "next_cursor": "cur_jkl012",
+  "has_more": true
+}
+```
+
+## Response Fields
+
+<ResponseField name="data" type="array">
+  An array of donation objects matching your query.
+
+  <Expandable title="Donation object fields">
+    <ResponseField name="id" type="string">
+      The unique identifier for the donation (e.g. `don_abc123`).
+    </ResponseField>
+
+    <ResponseField name="campaign_id" type="string">
+      The ID of the campaign this donation belongs to.
+    </ResponseField>
+
+    <ResponseField name="fundraiser_id" type="string | null">
+      The ID of the fundraiser page this donation was made through, or `null` if donated directly to the campaign.
+    </ResponseField>
+
+    <ResponseField name="amount" type="integer">
+      The donation amount in cents (e.g. `10000` = $100.00).
+    </ResponseField>
+
+    <ResponseField name="currency" type="string">
+      The ISO 4217 currency code for this donation (e.g. `CAD`, `USD`).
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      The donation frequency. One of: `one_time`, `monthly`, `annual`, `pledge`.
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      The current processing status. One of: `pending`, `completed`, `failed`, `refunded`.
+    </ResponseField>
+
+    <ResponseField name="donor" type="object">
+      Information about the donor.
+
+      <Expandable title="Donor fields">
+        <ResponseField name="donor.name" type="string">
+          The donor's full name. May be `"Anonymous"` if the donor chose to give anonymously.
+        </ResponseField>
+
+        <ResponseField name="donor.email" type="string">
+          The donor's email address.
+        </ResponseField>
+
+        <ResponseField name="donor.anonymous" type="boolean">
+          `true` if the donor chose to remain anonymous on the public campaign page.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="tribute" type="object | null">
+      Tribute information if this donation was made in memory or in honour of someone, or `null` if no tribute was designated.
+
+      <Expandable title="Tribute fields">
+        <ResponseField name="tribute.type" type="string">
+          The type of tribute. Either `in_memory_of` or `in_honour_of`.
+        </ResponseField>
+
+        <ResponseField name="tribute.name" type="string">
+          The name of the person being honoured or remembered.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="matched" type="boolean">
+      `true` if this donation was matched by a corporate or donor match program.
+    </ResponseField>
+
+    <ResponseField name="matched_amount" type="integer | null">
+      The matched contribution amount in cents, or `null` if the donation was not matched.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      The timestamp when the donation was recorded, in ISO 8601 format.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="next_cursor" type="string | null">
+  An opaque cursor string to pass as the `cursor` query parameter to fetch the next page of results. Returns `null` when you have reached the last page.
+</ResponseField>
+
+<ResponseField name="has_more" type="boolean">
+  Indicates whether additional pages of results are available. When `false`, you have retrieved all matching donations.
+</ResponseField>

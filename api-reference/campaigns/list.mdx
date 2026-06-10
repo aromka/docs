@@ -1,0 +1,128 @@
+---
+title: "GET /campaigns — List All Your Organization Campaigns"
+sidebarTitle: "List Campaigns"
+description: "Retrieve a paginated list of campaigns for your organization. Filter by status and control page size using cursor-based pagination."
+---
+
+Use this endpoint to fetch all campaigns associated with your organization. Results are returned in reverse chronological order (newest first) and support cursor-based pagination for efficient traversal of large datasets. You can narrow results by campaign status using the optional `status` query parameter.
+
+## Endpoint
+
+```
+GET https://api.crowdchange.co/v1/campaigns
+```
+
+## Query Parameters
+
+<ParamField query="limit" type="integer">
+  The number of campaigns to return per page. Defaults to `20`. Maximum value is `100`.
+</ParamField>
+
+<ParamField query="cursor" type="string">
+  A pagination cursor returned as `next_cursor` in a previous response. Pass this value to retrieve the next page of results.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter campaigns by their current status. Must be one of: `draft`, `active`, `completed`, `archived`.
+</ParamField>
+
+## Example Request
+
+```bash
+curl https://api.crowdchange.co/v1/campaigns?status=active&limit=20 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "camp_abc123",
+      "name": "2024 Annual Walk",
+      "description": "Our annual fundraising walk for heart research.",
+      "goal_amount": 10000000,
+      "raised_amount": 4250000,
+      "currency": "CAD",
+      "status": "active",
+      "donation_types": ["one_time", "monthly"],
+      "start_date": "2024-03-01T00:00:00Z",
+      "end_date": "2024-03-31T23:59:59Z",
+      "page_url": "https://give.crowdchange.co/annual-walk-2024",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-03-10T09:30:00Z"
+    }
+  ],
+  "next_cursor": null,
+  "has_more": false
+}
+```
+
+## Response Fields
+
+<ResponseField name="data" type="array">
+  An array of campaign objects matching your query.
+
+  <Expandable title="Campaign object fields">
+    <ResponseField name="id" type="string">
+      The unique identifier for the campaign (e.g. `camp_abc123`).
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      The display name of the campaign.
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      A human-readable description of the campaign's purpose and goals.
+    </ResponseField>
+
+    <ResponseField name="goal_amount" type="integer">
+      The fundraising goal expressed in cents. Divide by 100 to get the dollar value (e.g. `10000000` = $100,000.00).
+    </ResponseField>
+
+    <ResponseField name="raised_amount" type="integer">
+      The total amount raised so far, in cents.
+    </ResponseField>
+
+    <ResponseField name="currency" type="string">
+      The ISO 4217 currency code for this campaign (e.g. `CAD`, `USD`).
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      The current lifecycle status of the campaign. One of: `draft`, `active`, `completed`, `archived`.
+    </ResponseField>
+
+    <ResponseField name="donation_types" type="array">
+      The donation frequencies accepted by this campaign. Each element is one of: `one_time`, `monthly`, `annual`.
+    </ResponseField>
+
+    <ResponseField name="start_date" type="string">
+      The campaign's start date and time in ISO 8601 format.
+    </ResponseField>
+
+    <ResponseField name="end_date" type="string">
+      The campaign's end date and time in ISO 8601 format, or `null` if the campaign has no fixed end date.
+    </ResponseField>
+
+    <ResponseField name="page_url" type="string">
+      The public URL of the campaign's donation page.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      The timestamp when the campaign was created, in ISO 8601 format.
+    </ResponseField>
+
+    <ResponseField name="updated_at" type="string">
+      The timestamp of the most recent update to the campaign, in ISO 8601 format.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="next_cursor" type="string | null">
+  An opaque cursor string you can pass as the `cursor` query parameter to fetch the next page of results. Returns `null` when you have reached the last page.
+</ResponseField>
+
+<ResponseField name="has_more" type="boolean">
+  Indicates whether additional pages of results are available. When `false`, you have retrieved all matching campaigns.
+</ResponseField>

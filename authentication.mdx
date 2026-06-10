@@ -1,0 +1,88 @@
+---
+title: "API Key Authentication for the CrowdChange REST API"
+sidebarTitle: "Authentication"
+description: "Learn how to generate a CrowdChange API key, attach it to every request as a Bearer token, and follow best practices to keep your integration secure."
+---
+
+CrowdChange authenticates all API requests using API keys. Every request your application makes to the CrowdChange REST API must include a valid API key, passed as a Bearer token in the `Authorization` header. There are no cookies, sessions, or OAuth flows to manage — just a single key that identifies and authorizes your application.
+
+## Get your API key
+
+API keys are generated inside your CrowdChange dashboard:
+
+1. Log in and navigate to **Settings** in the left-hand sidebar.
+2. Click **API Keys** under the *Developer* section.
+3. Click **Create New Key**, give it a descriptive name (e.g. `CRM Sync — Production`), and click **Generate**.
+4. Copy the key immediately — for security reasons, CrowdChange will only show you the full key value once. Store it in a secrets manager or environment variable right away.
+
+You can create multiple API keys for different applications or environments (development, staging, production) and revoke any key independently without affecting the others.
+
+## Make an authenticated request
+
+Pass your API key as a Bearer token in the `Authorization` header of every request.
+
+### cURL
+
+```bash
+curl https://api.crowdchange.co/v1/campaigns \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### JavaScript (Fetch)
+
+```javascript
+const response = await fetch('https://api.crowdchange.co/v1/campaigns', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  }
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+Replace `YOUR_API_KEY` with the key you copied from the dashboard. All API requests must be made over **HTTPS** — requests sent over plain HTTP will be rejected.
+
+## Security best practices
+
+<Warning>
+  Never expose your API key in client-side code — that means no JavaScript bundles, no mobile app source code, no public GitHub repositories, and no browser console calls. Anyone who obtains your key can make authenticated requests on behalf of your organization. Always make API calls from a secure server-side environment where the key is stored as an environment variable or in a secrets manager.
+</Warning>
+
+Beyond keeping your key server-side, follow these practices to protect your integration:
+
+- **Use one key per application.** Creating a separate key for each service or environment means you can revoke a compromised key without disrupting unrelated integrations.
+- **Apply the principle of least privilege.** Only grant the scopes an integration actually needs. A reporting tool does not need write access to campaigns.
+- **Audit key usage regularly.** Review active keys in **Settings > API Keys** and delete any that are no longer in use.
+- **Store secrets securely.** Use environment variables, a platform secrets store (e.g. AWS Secrets Manager, HashiCorp Vault), or a CI/CD secrets feature — never hardcode keys in source files.
+
+<Tip>
+  Rotate your API keys on a regular schedule — at minimum every 90 days, or immediately if you suspect a key has been exposed. Generating a new key and updating your environment variables takes less than two minutes and eliminates risk from any previously leaked credentials.
+</Tip>
+
+## HTTP error codes
+
+If your request is not authenticated correctly, the API will return one of the following error responses:
+
+| Status Code | Name | Meaning |
+|---|---|---|
+| `401 Unauthorized` | Invalid or missing key | The `Authorization` header is absent, malformed, or contains a key that does not exist or has been revoked. Double-check that you are sending `Bearer YOUR_API_KEY` and that the key is still active in your dashboard. |
+| `403 Forbidden` | Insufficient permissions | The API key is valid but does not have permission to perform the requested action. Review the scopes assigned to the key under **Settings > API Keys**. |
+| `429 Too Many Requests` | Rate limit exceeded | Your application has sent more requests than the allowed rate limit permits. See the [Rate Limiting](#rate-limiting) section below for guidance on how to handle and recover from this response. |
+
+## Rate limiting
+
+The CrowdChange API enforces rate limits to ensure consistent performance for all customers. The current limit and your remaining request budget are returned in every response via standard headers:
+
+| Header | Description |
+|---|---|
+| `X-RateLimit-Limit` | Maximum number of requests allowed in the current window |
+| `X-RateLimit-Remaining` | Number of requests remaining in the current window |
+| `X-RateLimit-Reset` | Unix timestamp (UTC) when the current window resets |
+
+If you exceed the limit, the API returns a `429 Too Many Requests` response. Your application should inspect the `X-RateLimit-Reset` header and wait until that time before retrying.
+
+<Info>
+  To stay well within rate limits, cache responses wherever data does not need to be real-time. For example, a list of active campaigns retrieved for a landing page can safely be cached for 60 seconds rather than fetched on every page load.
+</Info>

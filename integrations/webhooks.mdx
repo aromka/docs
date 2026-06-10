@@ -1,0 +1,106 @@
+---
+title: "CrowdChange Webhooks: Real-Time Donation Event Notifications"
+sidebarTitle: "Webhooks"
+description: "Configure CrowdChange webhooks to receive live HTTP event notifications and sync donations with your CRM, workflows, and internal systems."
+---
+
+Webhooks let CrowdChange push real-time notifications to your own systems the moment something happens — a donation comes in, a pledge is fulfilled, or a ticket is scanned at the door. Instead of polling the API for updates, your server receives an HTTP POST request with full event details as soon as the action occurs. This makes it straightforward to sync donors to your CRM, trigger automated thank-you emails, update internal reporting dashboards, or kick off any other workflow your organization relies on.
+
+## Supported Events
+
+CrowdChange can notify your endpoint for the following events:
+
+| Event | Description |
+|---|---|
+| `donation.received` | A new donation was successfully processed |
+| `donation.recurring_charged` | A recurring donation was charged on its scheduled date |
+| `pledge.fulfilled` | A donor completed payment on a pledge they had made |
+| `campaign.goal_reached` | The campaign hit its fundraising goal |
+| `ticket.purchased` | A ticket was purchased for an event |
+| `ticket.scanned` | A ticket QR code was scanned at check-in |
+
+## Setting Up a Webhook Endpoint
+
+<Steps>
+  <Step title="Go to Settings > Webhooks">
+    From your CrowdChange dashboard, open **Settings** in the left navigation and select the **Webhooks** tab.
+  </Step>
+  <Step title="Click Add Endpoint">
+    Select **Add Endpoint** to open the webhook configuration form.
+  </Step>
+  <Step title="Enter your HTTPS endpoint URL">
+    Provide the full URL of the server endpoint that will receive the events. CrowdChange requires HTTPS for all webhook endpoints.
+  </Step>
+  <Step title="Select which events to subscribe to">
+    Check the events you want this endpoint to receive. You can subscribe to all events or only the ones relevant to your integration.
+  </Step>
+  <Step title="Copy the signing secret">
+    After saving, CrowdChange generates a unique **signing secret** for this endpoint. Copy it and store it securely — you will use it to verify incoming payloads.
+  </Step>
+  <Step title="Save and verify">
+    Click **Save**. CrowdChange will send a test ping to your endpoint to confirm it is reachable. Your endpoint should respond with a `200` status code.
+  </Step>
+</Steps>
+
+## Webhook Payload Structure
+
+Every webhook request is a `POST` with a JSON body and a `Content-Type: application/json` header. Below is an example payload for the `donation.received` event.
+
+```json
+{
+  "event": "donation.received",
+  "timestamp": "2024-03-15T14:30:00Z",
+  "data": {
+    "id": "don_abc123",
+    "campaign_id": "camp_xyz789",
+    "amount": 5000,
+    "currency": "CAD",
+    "type": "one_time",
+    "donor": {
+      "name": "Jane Smith",
+      "email": "jane@example.com"
+    },
+    "matched": false,
+    "created_at": "2024-03-15T14:30:00Z"
+  }
+}
+```
+
+<Info>
+  The `amount` field is expressed in **cents**. A value of `5000` represents $50.00 CAD. Always divide by 100 when displaying amounts to donors or in reports.
+</Info>
+
+## Verifying Webhook Signatures
+
+To ensure incoming requests are genuinely from CrowdChange and have not been tampered with, every webhook payload is signed using **HMAC-SHA256** with your endpoint's signing secret. The signature is included in the `X-CrowdChange-Signature` request header.
+
+You should always verify this signature before processing the event. Here is an example in Node.js:
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhook(payload, signature, secret) {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+```
+
+Pass the raw request body as `payload`, the value of the `X-CrowdChange-Signature` header as `signature`, and your endpoint's signing secret as `secret`. If the function returns `false`, discard the request.
+
+## Retry Policy
+
+If your endpoint does not respond with a `2xx` status code, CrowdChange will automatically retry the delivery up to **3 times** using exponential backoff. The retry intervals are approximately 30 seconds, 5 minutes, and 30 minutes after the initial attempt. If all retries are exhausted, the event is marked as failed in your webhook delivery log, which you can review under **Settings > Webhooks**.
+
+<Warning>
+  Your endpoint must return a `2xx` response within **5 seconds** of receiving the request. If it takes longer, CrowdChange will treat the delivery as failed and begin the retry sequence. Move any time-consuming processing (database writes, API calls, email sends) to a background queue and acknowledge the webhook immediately.
+</Warning>
+
+<Tip>
+  For local development and testing, use a tunneling tool like [ngrok](https://ngrok.com) to expose your localhost server to the internet. Run `ngrok http 3000` (replacing `3000` with your local port), then use the generated HTTPS URL as your webhook endpoint in CrowdChange.
+</Tip>

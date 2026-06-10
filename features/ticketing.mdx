@@ -1,0 +1,99 @@
+---
+title: "Event Ticketing with Tiers, Sales, and QR Code Check-In"
+sidebarTitle: "Ticketing"
+description: "Sell free, paid, or tiered event tickets through CrowdChange, then check in attendees at the door using the built-in mobile QR code scanner."
+---
+
+CrowdChange's built-in ticketing system lets you sell event tickets, collect purchaser information, and check in attendees at the door — all from within the same platform you use to run your [campaign](/concepts/campaigns). Whether you're hosting a gala, a 5K run, or a hybrid fundraising concert, you can create tiered ticket types, set quantity limits, and scan attendees in seconds using the CrowdChange mobile scanner. This page explains how to configure ticketing for your event and manage check-in day logistics.
+
+## Setting Up Tickets
+
+<Steps>
+  <Step title="Enable ticketing on your campaign">
+    From your campaign dashboard, go to **Campaign Settings → Ticketing** and toggle ticketing on. A new **Tickets** tab will appear in your campaign navigation.
+  </Step>
+  <Step title="Create ticket tiers">
+    Click **Add Ticket Type** to define each tier. Give each type a name (e.g., *General Admission*, *VIP*, *Table of 10*), set a price (or $0 for free tickets), and enter a quantity limit. Repeat for every tier you want to offer.
+  </Step>
+  <Step title="Set the event date, time, and location">
+    Enter your event's start and end date/time and a venue address. This information appears on the event page and is included in every confirmation email and calendar attachment.
+  </Step>
+  <Step title="Configure purchaser fields and add-ons">
+    Add any per-ticket or per-order fields you need — for example, a **Meal Choice** dropdown, a **T-Shirt Size** selector, or a free-text **Dietary Restrictions** field. You can also offer paid add-ons (e.g., *Parking Pass — $10*) that purchasers can select at checkout.
+  </Step>
+  <Step title="Publish the event page">
+    Click **Publish** to make your event page and ticket sales live. You can share the direct event URL or embed the ticket purchase flow on your website — see [Embeddables](/integrations/embeddables) for details.
+  </Step>
+</Steps>
+
+## Ticket Types
+
+<CardGroup cols={3}>
+  <Card title="Free Tickets" icon="ticket">
+    Set a price of $0 for free events or complimentary registrations. Attendees still receive a confirmation email with a QR code for check-in.
+  </Card>
+  <Card title="Paid Tickets" icon="credit-card">
+    Accept credit card payments at checkout. CrowdChange supports optional donor-covered processing fees so your organization keeps the full ticket price.
+  </Card>
+  <Card title="Tiered Tickets" icon="layer-group">
+    Offer multiple price points in a single event — such as General Admission, VIP, and Sponsor Table — each with its own quantity cap and purchaser fields.
+  </Card>
+</CardGroup>
+
+Each ticket type can have a **sales window** (open and close dates), a **quantity limit**, and a **per-order maximum** to prevent bulk purchasing.
+
+## Purchaser Experience
+
+When a supporter purchases a ticket, here's what they encounter:
+
+<Tabs>
+  <Tab title="Checkout Flow">
+    The purchaser selects a ticket type and quantity, fills in any required purchaser fields (meal choice, t-shirt size, etc.), and completes payment via credit card. The entire flow is mobile-optimized and takes under two minutes.
+  </Tab>
+  <Tab title="Confirmation Email">
+    Immediately after purchase, CrowdChange sends a confirmation email containing the event name, date, time, location, a calendar attachment (.ics), and a summary of the purchaser's selections.
+  </Tab>
+  <Tab title="QR Code Ticket">
+    Each ticket is issued as a unique QR code, delivered as a PDF attachment and displayed in the confirmation email. Purchasers can save it to Apple Wallet or Google Wallet, print it, or simply pull it up on their phone at the door.
+  </Tab>
+</Tabs>
+
+## QR Code Check-In
+
+On the day of your event, CrowdChange makes check-in fast and reliable without any additional hardware or software.
+
+<CardGroup cols={2}>
+  <Card title="Mobile Scanner" icon="mobile-screen">
+    Open the CrowdChange mobile app on any iOS or Android device and tap **Check-In Scanner**. Point the camera at an attendee's QR code — valid tickets show a green confirmation; already-scanned or invalid codes show a red alert.
+  </Card>
+  <Card title="Real-Time Tracking" icon="chart-line">
+    Every scan updates the check-in dashboard instantly. See a live count of checked-in attendees, remaining capacity, and a per-tier breakdown — all visible to any admin with the mobile app or a browser open.
+  </Card>
+  <Card title="Manual Check-In" icon="hand-pointer">
+    For guests who can't display their QR code, use the **Attendee Search** in the app or dashboard to find them by name or email and check them in manually with a single tap.
+  </Card>
+  <Card title="Multiple Scanners" icon="wifi">
+    Run as many simultaneous scanner stations as you need. All devices sync to the same event, so there's no risk of the same ticket being admitted twice at different entrances.
+  </Card>
+</CardGroup>
+
+<Note>
+  Ticket **refund** and **transfer** policies are configurable per event. You can allow self-service transfers (where a purchaser reassigns a ticket to a new name), restrict transfers to admin-only, and set a refund cutoff date in **Event Settings → Policies**.
+</Note>
+
+<Tip>
+  Running a gala or fundraising dinner? Combine ticketing with peer-to-peer fundraising so guests can register as fundraisers at checkout, arrive with a QR code ticket, and have their personal fundraising page ready to share at the event — all from a single campaign.
+</Tip>
+
+## Reporting
+
+All ticket sales and check-in activity flow directly into your CrowdChange reporting dashboard.
+
+<CardGroup cols={2}>
+  <Card title="Sales Reports" icon="file-invoice-dollar">
+    View total revenue by ticket tier, a list of all purchasers with their order details, and a timeline of sales activity. Export to CSV for your records or event-day printed list.
+  </Card>
+  <Card title="Check-In Reports" icon="clipboard-check">
+    After the event, download a full check-in log showing each attendee's name, ticket type, check-in time, and which scanner station admitted them.
+  </Card>
+</CardGroup>

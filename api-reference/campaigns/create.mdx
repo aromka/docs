@@ -1,0 +1,102 @@
+---
+title: "POST /campaigns — Create a New Fundraising Campaign"
+sidebarTitle: "Create Campaign"
+description: "Create a new fundraising campaign for your organization. Set your goal, accepted donation types, and campaign dates in a single API request."
+---
+
+Use this endpoint to programmatically create a new fundraising campaign. Newly created campaigns are set to `draft` status by default, giving you time to review and configure your campaign page before making it public. You can transition a campaign to `active` status using the [Update Campaign](/api-reference/campaigns/update) endpoint.
+
+## Endpoint
+
+```
+POST https://api.crowdchange.co/v1/campaigns
+```
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  The display name of the campaign. This appears on the public donation page and in your dashboard.
+</ParamField>
+
+<ParamField body="description" type="string">
+  A human-readable description of the campaign's purpose and goals. Supports plain text.
+</ParamField>
+
+<ParamField body="goal_amount" type="integer" required>
+  The fundraising goal in cents. For example, pass `5000000` to set a goal of $50,000.00.
+</ParamField>
+
+<ParamField body="currency" type="string">
+  The ISO 4217 currency code for this campaign. Defaults to `CAD`. Accepted values include `CAD` and `USD`.
+</ParamField>
+
+<ParamField body="donation_types" type="array" required>
+  The donation frequencies you want to accept. Must contain at least one of: `one_time`, `monthly`, `annual`.
+</ParamField>
+
+<ParamField body="start_date" type="string" required>
+  The date and time when the campaign opens for donations, in ISO 8601 format (e.g. `2024-05-01T00:00:00Z`).
+</ParamField>
+
+<ParamField body="end_date" type="string">
+  The date and time when the campaign closes, in ISO 8601 format. Omit this field to create an open-ended campaign with no fixed end date.
+</ParamField>
+
+## Example Request
+
+```bash
+curl -X POST https://api.crowdchange.co/v1/campaigns \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Spring Gala 2024",
+    "description": "Our annual spring fundraising gala",
+    "goal_amount": 5000000,
+    "currency": "CAD",
+    "donation_types": ["one_time"],
+    "start_date": "2024-05-01T00:00:00Z",
+    "end_date": "2024-05-31T23:59:59Z"
+  }'
+```
+
+## Example Response
+
+A successful request returns HTTP `201 Created` with the newly created campaign object.
+
+```json
+{
+  "data": {
+    "id": "camp_xyz789",
+    "name": "Spring Gala 2024",
+    "description": "Our annual spring fundraising gala",
+    "goal_amount": 5000000,
+    "raised_amount": 0,
+    "currency": "CAD",
+    "status": "draft",
+    "donation_types": ["one_time"],
+    "start_date": "2024-05-01T00:00:00Z",
+    "end_date": "2024-05-31T23:59:59Z",
+    "page_url": "https://give.crowdchange.co/spring-gala-2024",
+    "created_at": "2024-02-20T14:22:00Z",
+    "updated_at": "2024-02-20T14:22:00Z"
+  }
+}
+```
+
+## Common Errors
+
+| Error Code | Description |
+|---|---|
+| `validation_error` | One or more required fields are missing or contain invalid values. The `message` field will describe the specific issue. |
+| `authentication_failed` | Your API key is missing, malformed, or does not have permission to create campaigns. |
+
+### Example Error Response
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "The donation_types field is required and must contain at least one value."
+  }
+}
+```

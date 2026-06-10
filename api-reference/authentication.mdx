@@ -1,0 +1,99 @@
+---
+title: "API Keys and Authentication – CrowdChange REST API"
+sidebarTitle: "API Keys"
+description: "Learn how to generate CrowdChange API keys, authenticate every request with a Bearer token, manage key permissions, and follow security best practices."
+---
+
+The CrowdChange API uses **API keys** to authenticate every request. Each API key is a long-lived credential tied to a user account in your CrowdChange dashboard. You include the key in the `Authorization` header of each HTTP request, and the API uses it to verify your identity and enforce the permissions associated with that key.
+
+## Generating an API Key
+
+You can create as many API keys as you need — for example, one per integration or environment. Keys are generated from the CrowdChange dashboard.
+
+<Steps>
+  <Step title="Log in to your CrowdChange dashboard">
+    Visit [dashboard.crowdchange.co](https://dashboard.crowdchange.co) and sign in with your account credentials.
+  </Step>
+  <Step title="Go to Settings > API Keys">
+    Click your organization name in the top-right corner, then navigate to **Settings** and select the **API Keys** tab.
+  </Step>
+  <Step title="Click Generate New Key">
+    Press the **Generate New Key** button to open the key creation dialog.
+  </Step>
+  <Step title="Give the key a descriptive name">
+    Enter a name that identifies what this key is used for — for example, `"CRM Integration"` or `"Website Sync"`. A clear name makes it easy to audit and revoke individual keys later.
+  </Step>
+  <Step title="Copy the key immediately">
+    Your new key is displayed **only once**. Copy it now and store it securely (for example, in a secrets manager or an environment variable). If you lose the key you will need to revoke it and generate a new one.
+  </Step>
+</Steps>
+
+## Using Your API Key
+
+Pass your API key as a **Bearer token** in the `Authorization` header on every request:
+
+```bash
+curl https://api.crowdchange.co/v1/campaigns \
+  -H "Authorization: Bearer ck_live_abc123xyz"
+```
+
+Requests that are missing the header, or that supply an invalid or revoked key, will receive an HTTP `401` response with the error code `authentication_failed`.
+
+## API Key Format
+
+CrowdChange API keys use a prefix to indicate which environment they belong to:
+
+| Prefix | Environment | Description |
+|---|---|---|
+| `ck_live_` | Production | Makes real API calls that affect live data and processes real payments |
+| `ck_test_` | Test | Makes sandboxed API calls with no real-world side effects |
+
+<Note>
+  The rest of the key after the prefix is a randomly generated alphanumeric string. Never attempt to derive or guess keys from this pattern — always generate them through the dashboard.
+</Note>
+
+## Permissions
+
+API keys **inherit the permissions of the user who created them**. For example, if the creating user does not have access to payout settings, the API key cannot access payout endpoints either.
+
+<Tip>
+  For production integrations, create a dedicated integration user in your CrowdChange organization and assign it only the roles it needs. This follows the principle of least privilege and limits the blast radius if the key is ever compromised.
+</Tip>
+
+## Managing Keys
+
+You can manage all of your organization's API keys from **Settings > API Keys** in the dashboard. From there you can:
+
+- **View** all active keys, including the name, creation date, and last-used date for each key
+- **Revoke** a key immediately, making it invalid for all future requests
+- **Set up IP allowlisting** to restrict a key to requests originating from specific IP addresses
+
+Revoking a key takes effect immediately. Any in-flight request that has already passed authentication will complete, but subsequent requests using that key will receive a `401`.
+
+## Keeping Your Keys Secret
+
+<Warning>
+  API keys grant access to your organization's data and funds. Never commit an API key to source control, hard-code it in your application, or expose it in frontend JavaScript where it can be read by users. Always load keys from environment variables or a dedicated secrets manager at runtime.
+</Warning>
+
+## Security Best Practices
+
+Following a few simple practices significantly reduces the risk of a key being misused:
+
+- **Rotate keys periodically.** Generate a new key, update your integration, then revoke the old one. Regular rotation limits the window of exposure for any key that may have been inadvertently leaked.
+- **Use one key per integration.** Separate keys for separate systems mean you can revoke a single key without disrupting your other integrations.
+- **Enable IP allowlisting.** If your integration runs from a server with a fixed IP address, configure an allowlist in **Settings > API Keys** so the key is rejected from any other origin.
+- **Store keys in environment variables.** Frameworks and hosting platforms provide first-class support for environment variables. Use them rather than configuration files that could end up in version control.
+
+## Test Mode
+
+Use a `ck_test_` key to develop and test your integration safely. Test-mode API calls behave identically to production calls — the same endpoints, request shapes, and response formats — but they operate on a sandboxed dataset and **do not process real payments or modify live donor records**.
+
+```bash
+curl https://api.crowdchange.co/v1/campaigns \
+  -H "Authorization: Bearer ck_test_sandbox456def"
+```
+
+<Info>
+  Test-mode data is isolated from your live data. Campaigns, donors, and donations created with a test key will not appear in your live dashboard or reports.
+</Info>

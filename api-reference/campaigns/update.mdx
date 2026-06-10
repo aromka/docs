@@ -1,0 +1,95 @@
+---
+title: "PUT /campaigns/{id} — Update an Existing Campaign Record"
+sidebarTitle: "Update Campaign"
+description: "Update the details of an existing campaign, including its name, goal, end date, or status. Only include the fields you want to change."
+---
+
+Use this endpoint to modify an existing campaign. You only need to include the fields you want to update — any fields you omit will remain unchanged. This endpoint is commonly used to extend an end date, adjust a fundraising goal, or transition a campaign between lifecycle statuses (for example, publishing a `draft` campaign by setting its status to `active`).
+
+## Endpoint
+
+```
+PUT https://api.crowdchange.co/v1/campaigns/{id}
+```
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the campaign to update (e.g. `camp_abc123`).
+</ParamField>
+
+## Request Body
+
+All body fields are optional. Include only the fields you wish to update.
+
+<ParamField body="name" type="string">
+  A new display name for the campaign.
+</ParamField>
+
+<ParamField body="description" type="string">
+  An updated description of the campaign's purpose and goals.
+</ParamField>
+
+<ParamField body="goal_amount" type="integer">
+  A revised fundraising goal in cents (e.g. `7500000` = $75,000.00).
+</ParamField>
+
+<ParamField body="end_date" type="string">
+  A new end date and time for the campaign in ISO 8601 format. Pass `null` to remove an existing end date and make the campaign open-ended.
+</ParamField>
+
+<ParamField body="currency" type="string">
+  The ISO 4217 currency code for this campaign (e.g. `CAD`, `USD`).
+</ParamField>
+
+<ParamField body="donation_types" type="array">
+  The donation frequencies accepted by this campaign. Each element must be one of: `one_time`, `monthly`, `annual`. Must contain at least one value.
+</ParamField>
+
+<ParamField body="start_date" type="string">
+  A new start date and time for the campaign in ISO 8601 format (e.g. `2024-05-01T00:00:00Z`). Can only be updated while the campaign is in `draft` status.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Transition the campaign to a new lifecycle status. One of: `draft`, `active`, `completed`, `archived`.
+</ParamField>
+
+## Example Request
+
+The following example increases the fundraising goal and extends the campaign's end date:
+
+```bash
+curl -X PUT https://api.crowdchange.co/v1/campaigns/camp_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "goal_amount": 15000000,
+    "end_date": "2024-04-30T23:59:59Z"
+  }'
+```
+
+## Example Response
+
+```json
+{
+  "data": {
+    "id": "camp_abc123",
+    "name": "2024 Annual Walk",
+    "description": "Our annual fundraising walk for heart research.",
+    "goal_amount": 15000000,
+    "raised_amount": 4250000,
+    "currency": "CAD",
+    "status": "active",
+    "donation_types": ["one_time", "monthly"],
+    "start_date": "2024-03-01T00:00:00Z",
+    "end_date": "2024-04-30T23:59:59Z",
+    "page_url": "https://give.crowdchange.co/annual-walk-2024",
+    "created_at": "2024-01-15T10:00:00Z",
+    "updated_at": "2024-03-15T11:45:00Z"
+  }
+}
+```
+
+<Note>
+  Setting a campaign's `status` to `archived` is permanent and cannot be reversed via the API. Archived campaigns are hidden from public donation pages and no longer accept donations. If you need to re-activate an archived campaign, please contact CrowdChange support.
+</Note>

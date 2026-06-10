@@ -1,0 +1,91 @@
+---
+title: "Real-Time Fundraising Reporting, Analytics, and Data Exports"
+sidebarTitle: "Reporting"
+description: "Use CrowdChange's real-time dashboards and CSV exports to track fundraising performance, analyze donor behavior, and share data with your team."
+---
+
+CrowdChange gives you a live view into every aspect of your fundraising performance. The built-in reporting tools update in real time as donations come in, tickets sell, and pledges are fulfilled — so you always have an accurate picture of where your campaign stands. Whether you need a quick summary to share with your board, a detailed donor list for your CRM, or raw data for your accountant, CrowdChange's reports and exports have you covered.
+
+## Dashboard Overview
+
+The main reporting dashboard surfaces your most important metrics at a glance. As soon as you open a campaign's **Reports** tab, you will see:
+
+<CardGroup cols={2}>
+  <Card title="Total Raised" icon="circle-dollar-to-slot">
+    The cumulative amount raised for this campaign, updated in real time with every donation processed.
+  </Card>
+  <Card title="Donation Count" icon="list-ol">
+    The total number of individual donations received, including one-time and recurring contributions.
+  </Card>
+  <Card title="Average Gift" icon="chart-bar">
+    The mean donation amount, which helps you understand donor behavior and optimize your suggested giving levels.
+  </Card>
+  <Card title="New vs. Returning Donors" icon="users">
+    A breakdown of first-time donors versus those who have given to your organization before.
+  </Card>
+</CardGroup>
+
+The dashboard also includes a **progress-to-goal thermometer** showing how close your campaign is to its fundraising target — useful for embedding in donor-facing updates or team check-ins.
+
+## Campaign-Level Reports
+
+In addition to the summary dashboard, each campaign includes four detailed report views.
+
+**Donation report** — A full list of every donation received, with columns for donor name, amount, date, donation type (one-time or recurring), and whether the gift was matched by an employer or matching gift program.
+
+**Fundraiser leaderboard** — For peer-to-peer campaigns, this report ranks individual fundraisers and teams by the amount they have raised. Use it to celebrate top fundraisers and energize friendly competition.
+
+**Ticket report** — Shows all tickets sold, broken down by tier (e.g., General Admission, VIP), along with each ticket's check-in status so your event team knows who has arrived.
+
+**Pledge report** — Lists all pledges made during the campaign, organized by status: pending, fulfilled, or cancelled. Use this to follow up with donors who have outstanding pledges.
+
+## Exporting Your Data
+
+You can download any report as a CSV file to import into a spreadsheet, CRM, or accounting tool.
+
+<Steps>
+  <Step title="Go to your campaign's Reports tab">
+    Open your campaign from the CrowdChange dashboard and click **Reports** in the campaign navigation.
+  </Step>
+  <Step title="Select the report type">
+    Choose from **Donations**, **Donors**, **Tickets**, or **Pledges** using the tabs at the top of the Reports page.
+  </Step>
+  <Step title="Apply date filters if needed">
+    Use the date range picker to limit results to a specific time period, such as a fiscal quarter or a single event day.
+  </Step>
+  <Step title="Click Export CSV">
+    Select the **Export CSV** button in the top-right corner of the report view.
+  </Step>
+  <Step title="Download the file">
+    Your browser will download the CSV file. Open it in Excel, Google Sheets, or import it directly into your CRM or accounting software.
+  </Step>
+</Steps>
+
+## Donation CSV Fields
+
+When you export the **Donations** report, each row includes the following fields:
+
+| Field | Description |
+|---|---|
+| Donor Name | Full name of the donor |
+| Email | Donor's email address |
+| Address | Donor's mailing address |
+| Amount | Donation amount |
+| Donation Type | One-time or recurring |
+| Campaign | Campaign name |
+| Fundraiser | Peer-to-peer fundraiser name, if applicable |
+| Tribute / Dedication | In-honor-of or in-memory-of details, if provided |
+| Date | Date and time of the donation |
+| Transaction ID | Unique identifier for the payment transaction |
+
+## API Access for Reporting
+
+All of the data available in the dashboard and exports is also accessible programmatically via the CrowdChange REST API. This lets you pull donation data into custom dashboards, automate report generation, or integrate with business intelligence tools. See the [API Reference](/api-reference/overview) for full endpoint documentation, authentication details, and example requests.
+
+<Tip>
+  Consider scheduling a weekly CSV export and importing it automatically into your CRM or accounting software. Many CRMs support CSV imports via Zapier or a built-in import tool, making it easy to keep your donor records in sync without any manual data entry.
+</Tip>
+
+<Note>
+  CrowdChange retains donation records indefinitely. You can export data from any point in your organization's history at any time — there is no rolling window or expiration on your records.
+</Note>

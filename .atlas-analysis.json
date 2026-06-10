@@ -1,0 +1,116 @@
+{
+  "projectType": "saas",
+  "projectName": "CrowdChange",
+  "projectDescription": "A fully-integrated digital fundraising platform for nonprofits, offering donation forms, peer-to-peer fundraising, ticketing, pledging, and real-time reporting with no coding required.",
+  "theme": "luma",
+  "primaryColor": "#2563EB",
+  "lightColor": "#60A5FA",
+  "darkColor": "#1D4ED8",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/campaigns",
+              "concepts/donations",
+              "concepts/fundraisers"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/donation-forms",
+              "features/peer-to-peer",
+              "features/ticketing",
+              "features/pledging",
+              "features/donation-matching",
+              "features/ecards"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/embeddables",
+              "integrations/webhooks",
+              "integrations/reporting"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/authentication"
+            ]
+          },
+          {
+            "group": "Campaigns",
+            "pages": [
+              "api-reference/campaigns/list",
+              "api-reference/campaigns/create",
+              "api-reference/campaigns/get",
+              "api-reference/campaigns/update"
+            ]
+          },
+          {
+            "group": "Donations",
+            "pages": [
+              "api-reference/donations/list",
+              "api-reference/donations/get",
+              "api-reference/donations/create"
+            ]
+          },
+          {
+            "group": "Donors & Teams",
+            "pages": [
+              "api-reference/donors/list",
+              "api-reference/donors/get",
+              "api-reference/teams/list"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "No-code fundraising campaign builder",
+    "Embeddable donation forms",
+    "Peer-to-peer fundraising and event registration",
+    "Pledging and offline donation tracking",
+    "Donation matching with configurable multipliers",
+    "Ticketing with QR code verification",
+    "eCard store and tribute card designer",
+    "Real-time reporting and analytics",
+    "Master templates and blueprinting for multi-location events",
+    "Social sharing and QR code generation"
+  ],
+  "publicApiSurface": [
+    "GET /campaigns",
+    "POST /campaigns",
+    "GET /campaigns/{id}",
+    "PUT /campaigns/{id}",
+    "GET /donations",
+    "GET /donations/{id}",
+    "POST /donations",
+    "GET /donors",
+    "GET /donors/{id}",
+    "GET /teams",
+    "Webhook events for donation received, campaign goal reached, ticket scanned",
+    "Embeddable donation form code generation"
+  ]
+}

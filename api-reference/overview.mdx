@@ -1,0 +1,164 @@
+---
+title: "CrowdChange REST API – Overview and Getting Started"
+sidebarTitle: "Overview"
+description: "Learn the CrowdChange REST API fundamentals: base URL, JSON conventions, pagination, amounts, timestamps, rate limits, and error handling."
+---
+
+The CrowdChange REST API gives you programmatic access to every corner of your fundraising platform. With it you can build custom donation flows, sync campaign data with your CRM, automate donor communications, generate financial reports, and much more — all over standard HTTPS using JSON.
+
+## Base URL
+
+Every API request is made to the following base URL:
+
+```
+https://api.crowdchange.co/v1
+```
+
+All endpoints are versioned under `/v1`. When breaking changes are introduced, a new version path will be announced with a migration guide and a deprecation window.
+
+## Request Format
+
+All endpoints accept and return **JSON**. Include the `Content-Type` header on every request that sends a body:
+
+```bash
+Content-Type: application/json
+```
+
+A typical request looks like this:
+
+```bash
+curl https://api.crowdchange.co/v1/campaigns \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Spring Gala 2024", "goal_amount": 500000}'
+```
+
+## Authentication
+
+All requests must be authenticated with an API key passed as a Bearer token. See the [API Keys](/api-reference/authentication) page for instructions on generating a key and attaching it to your requests.
+
+## Pagination
+
+Endpoints that return lists use **cursor-based pagination**, which is stable and efficient even as new records are created between pages.
+
+### Parameters
+
+<ParamField query="limit" type="integer" default="20">
+  The number of records to return per page. Maximum value is `100`.
+</ParamField>
+
+<ParamField query="cursor" type="string">
+  An opaque string token returned as `next_cursor` from the previous response. Omit this parameter to start from the first page.
+</ParamField>
+
+### Response envelope
+
+Every paginated response wraps the list in a `data` array and includes cursor fields at the top level:
+
+<ResponseField name="data" type="array">
+  The list of records for the current page.
+</ResponseField>
+
+<ResponseField name="next_cursor" type="string | null">
+  An opaque token you can pass as the `cursor` parameter to fetch the next page. Returns `null` when you have reached the last page.
+</ResponseField>
+
+<ResponseField name="has_more" type="boolean">
+  `true` when there are additional pages beyond the current one.
+</ResponseField>
+
+### Example
+
+**Request**
+
+```bash
+curl https://api.crowdchange.co/v1/campaigns?limit=20 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**Response**
+
+```json
+{
+  "data": [...],
+  "next_cursor": "eyJpZCI6ImNhbXBfMTIzIn0=",
+  "has_more": true
+}
+```
+
+To fetch the next page, pass the returned token as the `cursor` query parameter:
+
+```bash
+curl "https://api.crowdchange.co/v1/campaigns?limit=20&cursor=eyJpZCI6ImNhbXBfMTIzIn0=" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+<Note>
+  Cursor tokens are opaque and URL-encoded. Do not attempt to decode or construct them manually — always use the value returned verbatim from the previous response.
+</Note>
+
+## Amounts
+
+All monetary values in the API are expressed as **integers in cents**. For example, a value of `5000` represents $50.00 CAD. This avoids floating-point precision issues when storing and transmitting currency.
+
+<Tip>
+  To convert a dollar amount to cents before sending it to the API, multiply by `100`. To display a cents value to a donor, divide by `100` and format with two decimal places.
+</Tip>
+
+## Timestamps
+
+All date and time values are returned as **ISO 8601 UTC strings**. For example:
+
+```
+"2024-03-15T14:30:00Z"
+```
+
+When you supply a timestamp in a request body, use the same ISO 8601 UTC format. The API rejects timestamps that include an unrecognized offset or an ambiguous local time.
+
+## Rate Limits
+
+The API allows up to **1,000 requests per minute** per API key. Every response includes the following headers so you can monitor your usage and back off gracefully:
+
+| Header | Description |
+|---|---|
+| `X-RateLimit-Limit` | The maximum number of requests allowed per minute for your key |
+| `X-RateLimit-Remaining` | The number of requests remaining in the current window |
+| `X-RateLimit-Reset` | A Unix timestamp indicating when the current window resets |
+
+When you exceed the limit the API responds with HTTP `429` and the error code `rate_limit_exceeded`. Wait until the time indicated by `X-RateLimit-Reset` before retrying.
+
+<Info>
+  If you anticipate bursts of traffic — for example, during a live event — consider caching paginated list responses on your side to reduce the number of API calls.
+</Info>
+
+## Error Responses
+
+When a request fails, the API returns a JSON body with a single top-level `error` object:
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "The 'goal_amount' field is required."
+  }
+}
+```
+
+<ResponseField name="error.code" type="string">
+  A machine-readable string identifying the category of the error. Use this in your application logic to branch on specific failure cases.
+</ResponseField>
+
+<ResponseField name="error.message" type="string">
+  A human-readable explanation of what went wrong. Suitable for logging, but not intended to be shown verbatim to end users.
+</ResponseField>
+
+### Error codes
+
+| Code | HTTP Status | Meaning |
+|---|---|---|
+| `authentication_failed` | 401 | Missing or invalid API key |
+| `forbidden` | 403 | API key lacks permission for this resource |
+| `not_found` | 404 | Resource does not exist |
+| `validation_error` | 422 | Request body failed validation |
+| `rate_limit_exceeded` | 429 | Too many requests |
+| `internal_error` | 500 | Unexpected server error |

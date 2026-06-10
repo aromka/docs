@@ -1,0 +1,158 @@
+---
+title: "Retrieve All Donors — CrowdChange Donor Record API"
+sidebarTitle: "List Donors"
+description: "Retrieve a paginated list of donor records across your organization. Filter by campaign, tag, or date range to sync to your CRM or build donor segments."
+---
+
+The donors endpoint gives you full access to your organization's donor records. Use it to sync donor data to your CRM, identify major donors for stewardship outreach, or build targeted segments based on giving history, tags, or campaign participation.
+
+## Endpoint
+
+```
+GET https://api.crowdchange.co/v1/donors
+```
+
+## Query Parameters
+
+<ParamField query="limit" type="integer">
+  The number of donor records to return per page. Defaults to `20`. Maximum is `100`.
+</ParamField>
+
+<ParamField query="cursor" type="string">
+  A pagination cursor returned as `next_cursor` from a previous response. Pass this value to retrieve the next page of results.
+</ParamField>
+
+<ParamField query="campaign_id" type="string">
+  Filter results to donors who made at least one donation to the specified campaign. Use the campaign's ID (e.g. `camp_abc123`).
+</ParamField>
+
+<ParamField query="tags" type="string">
+  A comma-separated list of tag names to filter by (e.g. `major-donor,recurring`). Only donors matching **all** provided tags are returned.
+</ParamField>
+
+<ParamField query="date_from" type="string">
+  An ISO 8601 date-time string. Returns only donors whose most recent donation was on or after this date (e.g. `2024-01-01T00:00:00Z`).
+</ParamField>
+
+<ParamField query="date_to" type="string">
+  An ISO 8601 date-time string. Returns only donors whose most recent donation was on or before this date (e.g. `2024-12-31T23:59:59Z`).
+</ParamField>
+
+## Example Request
+
+```bash
+curl "https://api.crowdchange.co/v1/donors?campaign_id=camp_abc123&limit=50" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "dnr_abc123",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "phone": "+1-416-555-0100",
+      "address": {
+        "street": "123 Main St",
+        "city": "Toronto",
+        "province": "ON",
+        "postal_code": "M5V 1A1",
+        "country": "CA"
+      },
+      "total_donated": 75000,
+      "donation_count": 3,
+      "first_donation_at": "2022-04-10T09:00:00Z",
+      "last_donation_at": "2024-03-15T14:30:00Z",
+      "tags": ["major-donor", "recurring"],
+      "created_at": "2022-04-10T09:00:00Z"
+    }
+  ],
+  "next_cursor": "eyJpZCI6ImRucl80NTYifQ==",
+  "has_more": true
+}
+```
+
+## Response Fields
+
+<ResponseField name="data" type="array">
+  An array of donor objects matching your query.
+
+  <Expandable title="Donor object fields">
+    <ResponseField name="id" type="string">
+      The unique identifier for the donor (e.g. `dnr_abc123`).
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      The donor's full name as entered at the time of their first donation.
+    </ResponseField>
+
+    <ResponseField name="email" type="string">
+      The donor's email address.
+    </ResponseField>
+
+    <ResponseField name="phone" type="string | null">
+      The donor's phone number, or `null` if not provided.
+    </ResponseField>
+
+    <ResponseField name="address" type="object | null">
+      The donor's mailing address, or `null` if not provided.
+
+      <Expandable title="Address fields">
+        <ResponseField name="street" type="string">
+          Street address including number and street name.
+        </ResponseField>
+        <ResponseField name="city" type="string">
+          City name.
+        </ResponseField>
+        <ResponseField name="province" type="string">
+          Province or state code (e.g. `ON`, `CA`, `NY`).
+        </ResponseField>
+        <ResponseField name="postal_code" type="string">
+          Postal or ZIP code.
+        </ResponseField>
+        <ResponseField name="country" type="string">
+          Two-letter ISO 3166-1 alpha-2 country code (e.g. `CA`, `US`).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="total_donated" type="integer">
+      The total amount donated by this donor across all campaigns, in cents. Divide by `100` to convert to dollars (e.g. `75000` = $750.00).
+    </ResponseField>
+
+    <ResponseField name="donation_count" type="integer">
+      The total number of completed donations made by this donor.
+    </ResponseField>
+
+    <ResponseField name="first_donation_at" type="string">
+      ISO 8601 timestamp of the donor's first completed donation.
+    </ResponseField>
+
+    <ResponseField name="last_donation_at" type="string">
+      ISO 8601 timestamp of the donor's most recent completed donation.
+    </ResponseField>
+
+    <ResponseField name="tags" type="array of strings">
+      Custom labels applied to this donor in the CrowdChange dashboard (e.g. `["major-donor", "recurring"]`). An empty array is returned if no tags have been applied.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      ISO 8601 timestamp of when this donor record was created in CrowdChange.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="next_cursor" type="string | null">
+  A cursor string to pass as the `cursor` query parameter in your next request to retrieve the following page of results. Returns `null` when there are no more pages.
+</ResponseField>
+
+<ResponseField name="has_more" type="boolean">
+  `true` if additional pages of results are available beyond the current response.
+</ResponseField>
+
+<Tip>
+  You can apply custom tags to donors directly in the CrowdChange dashboard — for example, `major-donor`, `lapsed`, or `event-attendee`. Once tagged, use the `tags` query parameter here to pull only those segments via the API, making it straightforward to trigger targeted email workflows or sync specific donor groups to your CRM.
+</Tip>
